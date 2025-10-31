@@ -1,16 +1,61 @@
-# React + Vite
+# 커밋 메시지 규칙
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+커밋 메시지는 다음 형식을 따릅니다.
 
-Currently, two official plugins are available:
+[타입]_MM/DD - 변경 내용
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+yaml
+코드 복사
 
-## React Compiler
+### 규칙
+1. **타입 `[타입]`**  
+   - 커밋 목적을 명시  
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+2. **날짜 `_MM/DD`**  
+   - 커밋한 날짜 표기  
 
-## Expanding the ESLint configuration
+3. **변경 내용 `- 메시지`**  
+   - **명사형**으로 끝내기  
+   - 변경 내용을 구체적으로 작성  
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+4. **작업 단위 커밋**  
+   - 한 커밋에는 한 가지 작업/기능만 포함  
+   - 작업한 기능이 여러 개라면 **커밋도 나눠서**, **작업한 파일도 기능별로 나눠서 올리기**  
+   - 이렇게 하면 히스토리 관리와 코드 리뷰가 쉬워짐  
+
+---
+
+### 타입별 설명
+
+| 타입     | 의미                                     | 예시 커밋 메시지                     |
+|----------|----------------------------------------|-----------------------------------|
+| feat     | 새로운 기능 추가                        | `[feat]_10/22 - 알람 기능 추가`    |
+| fix      | 버그 수정                                | `[fix]_10/23 - 로그인 오류 수정`   |
+| docs     | 문서 수정                                | `[docs]_10/24 - README 설치 방법 업데이트` |
+| style    | 코드 포맷팅, 세미콜론 누락 등 기능 변화 없음 | `[style]_10/25 - 버튼 마진 통일`  |
+| refactor | 코드 구조 개선, 기능 변화 없음            | `[refactor]_10/26 - 사용자 데이터 처리 구조 개선` |
+| perf     | 성능 개선                                | `[perf]_10/27 - 이미지 로딩 속도 개선` |
+| test     | 테스트 코드 추가/수정                     | `[test]_10/28 - 로그인 유닛 테스트 추가` |
+| chore    | 빌드, 패키지, 잡일 등                     | `[chore]_10/29 - 패키지 버전 업데이트` |
+
+---
+
+### 예시: 작업 단위 커밋
+
+- 로그인 기능 개발 중 UI, API, 테스트 각각 별도로 커밋
+[feat]_10/22 - 로그인 UI 추가
+[feat]_10/22 - 로그인 API 연결
+[test]_10/22 - 로그인 유닛 테스트 작성
+
+markdown
+코드 복사
+
+- 이렇게 커밋을 나누면 코드 리뷰, 히스토리 확인, 롤백이 훨씬 용이
+
+---
+
+> 🔹 포인트  
+> - 메시지는 항상 **명사형**으로 끝내기  
+> - **작업 단위별 커밋**으로 분리  
+> - 타입과 날짜는 **정해진 형식**으로 작성  
+> - 일관성 있는 커밋 메시지로 히스토리 관리와 협업 효율 향상
