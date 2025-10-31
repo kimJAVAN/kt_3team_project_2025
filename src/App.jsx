@@ -7,7 +7,6 @@ function App() {
       <Box minH="100vh">
         <Routes>
           <Route path="/" element={<div>Home</div>} />
-          {/* 다른 라우트들 추가 예정 */}
         </Routes>
       </Box>
     </Router>
