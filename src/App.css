@@ -1,0 +1,19 @@
+@import "pretendard/dist/web/static/pretendard.css";
+
+:root {
+  /* Font sizes */
+  --font-larger: 32px;
+  --font-large: 24px;
+  --font-medium: 16px;
+  --font-small: 14px;
+
+  /* Font family */
+  --font-family: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+    Roboto, "Helvetica Neue", "Segoe UI", "Apple SD Gothic Neo", "Noto Sans KR",
+    "Malgun Gothic", sans-serif;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-medium);
+}
