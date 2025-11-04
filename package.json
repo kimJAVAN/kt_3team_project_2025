@@ -16,6 +16,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@tosspayments/payment-sdk": "^1.9.1",
+    "@tosspayments/tosspayments-sdk": "^2.4.1",
     "axios": "^1.13.1",
     "dotenv": "^17.2.3",
     "firebase": "^12.5.0",
