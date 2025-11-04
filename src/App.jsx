@@ -1,16 +1,12 @@
-import { HashRouter as Router, Routes, Route } from 'react-router-dom'
-import { Box } from '@chakra-ui/react'
+import { RouterProvider } from "react-router-dom";
+import router from "./routes/router";
 
 function App() {
   return (
-    <Router>
-      <Box minH="100vh">
-        <Routes>
-          <Route path="/" element={<div>Home</div>} />
-        </Routes>
-      </Box>
-    </Router>
-  )
+    <>
+      <RouterProvider router={router} />
+    </>
+  );
 }
 
-export default App
+export default App;
