@@ -15,33 +15,33 @@ import Logo from '../assets/logo.png';
 
 export default function Header() {
   return (
-    <Container
-      maxW={'container.xl'}
-      my={6}
-      borderBottom={'1px solid #eee'}
-      pb={2}
-    >
-      <HStack>
+    <Container maxW="100%" my={6} borderBottom={'1px solid #eee'} pb={2}>
+      <HStack maxW="1200px" justifyContent="space-between" alignItems="center">
         <Image
           src={Logo}
           alt="사이트 로고"
-          boxSize="60px"
+          width="80px"
           objectFit="contain"
           cursor="pointer"
         />
         <Box>
-          <InputGroup startElement={<IoIosSearch />}>
-            <Input placeholder="Username" />
+          <InputGroup endElement={<IoIosSearch />}>
+            <Input
+              placeholder="검색어를 입력하세요."
+              width="600px"
+              height="50px"
+              borderRadius="30px"
+            />
           </InputGroup>
         </Box>
         <HStack>
           <IconButton
             variant="ghost"
-            size="sm"
+            size="md"
             css={{
               _icon: {
-                width: '5',
-                height: '5',
+                width: '6',
+                height: '6',
               },
             }}
           >
@@ -49,11 +49,11 @@ export default function Header() {
           </IconButton>
           <IconButton
             variant="ghost"
-            size="sm"
+            size="md"
             css={{
               _icon: {
-                width: '5',
-                height: '5',
+                width: '6',
+                height: '6',
               },
             }}
           >
