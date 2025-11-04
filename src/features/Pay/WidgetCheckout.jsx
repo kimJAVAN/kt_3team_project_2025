@@ -77,12 +77,18 @@ export function WidgetCheckoutPage({ amount, orderName, onReady, triggerPayment 
   }, [triggerPayment]);
 
   const handlePayment = async () => {
+
+    const baseUrl =
+    import.meta.env.MODE === "production"
+      ? `${window.location.origin}/kt_3team_project_2025`
+      : window.location.origin;
+
     try {
       await widgetsRef.current.requestPayment({
         orderId: generateRandomString(),
         orderName: orderName,
-        successUrl: window.location.origin + "/widget/success",
-        failUrl: window.location.origin + "/fail",
+        successUrl: `${baseUrl}/pay/success`,
+        failUrl: `${baseUrl}/pay/fail`,
         customerEmail: "customer123@gmail.com",
         customerName: "김토스",
       });
