@@ -1,6 +1,8 @@
 import { Image } from '@chakra-ui/react';
 import banner1 from '@/assets/banner1.png';
 import banner2 from '@/assets/banner2.png';
+import banner3 from '@/assets/banner3.png';
+import banner4 from '@/assets/banner4.png';
 
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay } from 'swiper/modules';
@@ -13,7 +15,8 @@ const Banner = () => {
   return (
     <Swiper
       className="home-banner"
-      style="--swiper-theme-color: #fff;"
+      borderRadius="md"
+      overflow="hidden"
       spaceBetween={50}
       slidesPerView={1}
       navigation
@@ -31,11 +34,11 @@ const Banner = () => {
       </SwiperSlide>
 
       <SwiperSlide>
-        <Image src={banner1} alt="배너3" w="100%" h="auto" objectFit="cover" />
+        <Image src={banner3} alt="배너3" w="100%" h="auto" objectFit="cover" />
       </SwiperSlide>
 
       <SwiperSlide>
-        <Image src={banner2} alt="배너4" w="100%" h="auto" objectFit="cover" />
+        <Image src={banner4} alt="배너4" w="100%" h="auto" objectFit="cover" />
       </SwiperSlide>
     </Swiper>
   );
