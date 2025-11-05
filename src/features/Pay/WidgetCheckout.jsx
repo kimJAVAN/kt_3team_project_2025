@@ -1,17 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
-import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
+// import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
 
 function generateRandomString() {
   return window.btoa(Math.random().toString()).slice(0, 20);
 }
 
-export function WidgetCheckoutPage({ amount, orderName, onReady, triggerPayment }) {
+export function WidgetCheckoutPage({
+  amount,
+  orderName,
+  onReady,
+  triggerPayment,
+}) {
   const [widgets, setWidgets] = useState(null);
   const [ready, setReady] = useState(false);
   const widgetsRef = useRef(null);
 
   const clientKey = import.meta.env.VITE_TOSS_CLIENT_KEY;
-  // const clientKey = 'test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq'; // toss test client key 
+  // const clientKey = 'test_ck_D5GePWvyJnrK0W0k6q8gLzN97Eoq'; // toss test client key
   const customerKey = useRef(generateRandomString()).current;
 
   useEffect(() => {
@@ -23,7 +28,7 @@ export function WidgetCheckoutPage({ amount, orderName, onReady, triggerPayment 
         setWidgets(widgetsInstance);
         widgetsRef.current = widgetsInstance;
       } catch (error) {
-        console.error("Error fetching payment widget:", error);
+        console.error('Error fetching payment widget:', error);
       }
     }
     fetchPaymentWidgets();
@@ -35,25 +40,25 @@ export function WidgetCheckoutPage({ amount, orderName, onReady, triggerPayment 
 
       try {
         await widgets.setAmount({
-          currency: "KRW",
+          currency: 'KRW',
           value: amount,
         });
 
         await Promise.all([
           widgets.renderPaymentMethods({
-            selector: "#payment-method",
-            variantKey: "DEFAULT",
+            selector: '#payment-method',
+            variantKey: 'DEFAULT',
           }),
           widgets.renderAgreement({
-            selector: "#agreement",
-            variantKey: "AGREEMENT",
+            selector: '#agreement',
+            variantKey: 'AGREEMENT',
           }),
         ]);
 
         setReady(true);
         if (onReady) onReady(true);
       } catch (error) {
-        console.error("Error rendering widgets:", error);
+        console.error('Error rendering widgets:', error);
       }
     }
     renderPaymentWidgets();
@@ -63,7 +68,7 @@ export function WidgetCheckoutPage({ amount, orderName, onReady, triggerPayment 
   useEffect(() => {
     if (widgetsRef.current && ready) {
       widgetsRef.current.setAmount({
-        currency: "KRW",
+        currency: 'KRW',
         value: amount,
       });
     }
@@ -77,23 +82,23 @@ export function WidgetCheckoutPage({ amount, orderName, onReady, triggerPayment 
   }, [triggerPayment]);
 
   const handlePayment = async () => {
-
     const baseUrl =
-    import.meta.env.MODE === "production"
-      ? `${window.location.origin}/kt_3team_project_2025`
-      : window.location.origin;
+      import.meta.env.MODE === 'production'
+        ? `${window.location.origin}/kt_3team_project_2025`
+        : window.location.origin;
 
     try {
       await widgetsRef.current.requestPayment({
         orderId: generateRandomString(),
         orderName: orderName,
         successUrl: `${window.location.origin}/kt_3team_project_2025/pay/success`,
-        failUrl: `${baseUrl}/pay/fail`,
-        customerEmail: "customer123@gmail.com",
-        customerName: "김토스",
+
+        failUrl: `${window.location.origin}/kt_3team_project_2025/pay/fail`,
+        customerEmail: 'customer123@gmail.com',
+        customerName: '김토스',
       });
     } catch (error) {
-      console.error("Payment error:", error);
+      console.error('Payment error:', error);
     }
   };
 
