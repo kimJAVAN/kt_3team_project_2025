@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Box, Button, Heading, Input, Textarea, Stack, HStack, Flex, Text, Image } from '@chakra-ui/react';
 import { WidgetCheckoutPage } from './WidgetCheckout';
+import { useNavigate } from "react-router-dom";
 
 export default function PaymentPage() {
   const [customerType, setCustomerType] = useState('existing');
@@ -15,8 +16,8 @@ export default function PaymentPage() {
   const [phone1, setPhone1] = useState('010');
   const [phone2, setPhone2] = useState('');
   const [phone3, setPhone3] = useState('');
+  const navigate = useNavigate();
 
-  // 전화번호 합치기
   const phoneNumber = `${phone1}${phone2}${phone3}`;
 
   useEffect(() => {
@@ -51,16 +52,17 @@ export default function PaymentPage() {
       return;
     }
     
-    // 결제 시 사용할 데이터
+    // 결제 시 사용할 데이터를 localStorage에 저장 (결제 성공 후 사용)
     const paymentData = {
-      phoneNumber: phoneNumber, // 010XXXXXXXX 형식
+      phoneNumber: phoneNumber,
       orderName: orderName,
       finalPrice: finalPrice,
       orderItems: orderItems,
-      // 필요한 다른 정보들...
     };
     
-    console.log('결제 데이터:', paymentData);
+    localStorage.setItem("paymentData", JSON.stringify(paymentData));
+    
+    // 토스 결제 위젯 실행 (navigate 제거!)
     setTriggerPayment(prev => prev + 1);
   };
 

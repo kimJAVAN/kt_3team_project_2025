@@ -87,8 +87,8 @@ export function WidgetCheckoutPage({ amount, orderName, onReady, triggerPayment 
       await widgetsRef.current.requestPayment({
         orderId: generateRandomString(),
         orderName: orderName,
-        successUrl: `${baseUrl}/pay/success`,
-        failUrl: `${baseUrl}/pay/fail`,
+        successUrl: `${window.location.origin}/kt_3team_project_2025/pay/success`,
+        failUrl: `${window.location.origin}/kt_3team_project_2025/pay/fail`,
         customerEmail: "customer123@gmail.com",
         customerName: "김토스",
       });

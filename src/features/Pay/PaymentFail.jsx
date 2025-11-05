@@ -13,7 +13,7 @@ export function PaymentFailPage() {
       <Box maxW="800px" mx="auto" px="20px">
         <Stack gap="32px" align="center">
           {/* 실패 이미지 및 타이틀 */}
-          <Box bg="#FFF5F5" p="40px" borderRadius="15px" w="100%" textAlign="center">
+          <Box bg="var(--bg-color)" p="40px" borderRadius="15px" w="100%" textAlign="center">
             <Box 
               fontSize="64px" 
               mb="24px"
@@ -29,7 +29,7 @@ export function PaymentFailPage() {
           </Box>
 
           {/* 에러 정보 */}
-          <Box bg="#F7F6ED" p="32px" borderRadius="15px" w="100%">
+          <Box bg="var(--bg-color)" p="32px" borderRadius="15px" w="100%">
             <Heading fontSize="24px" mb="24px" color="#000">
               오류 정보
             </Heading>
@@ -74,27 +74,27 @@ export function PaymentFailPage() {
           <Stack direction={{ base: 'column', md: 'row' }} gap="16px" w="100%">
             <Button
               as={Link}
-              to="/payment"
+              to="/kt_3team_project_2025/cart"
               bg="#0A400C"
               color="#FFFFFF"
               fontSize="18px"
               h="60px"
               borderRadius="15px"
-              _hover={{ bg: '#0d5010' }}
+              _hover={{ bg: 'var(--main-color)' }}
               flex="1"
             >
               다시 결제하기
             </Button>
             <Button
               as={Link}
-              to="/"
+              to="/kt_3team_project_2025"
               bg="white"
-              color="#0A400C"
+              color="var(--main-color)"
               fontSize="18px"
               h="60px"
               borderRadius="15px"
-              border="2px solid #0A400C"
-              _hover={{ bg: '#F7F6ED' }}
+              border="2px solid var(--main-color)"
+              _hover={{ bg: 'var(--bg-color)' }}
               flex="1"
             >
               홈으로 가기
