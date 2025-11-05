@@ -8,15 +8,15 @@
   
   만약 코드에 빨간줄이 있어도 실행하시면 됩니다. 오류 발생하면 알려주세요.
 */
-import axios from "axios";
-import dotenv from "dotenv";
-import admin from "firebase-admin";
+import axios from 'axios';
+import dotenv from 'dotenv';
+import admin from 'firebase-admin';
 
 dotenv.config();
 
 // Firebase Admin SDK 초기화
 admin.initializeApp({
-  credential: admin.credential.cert("./scripts/serviceAccountKey.json"),
+  credential: admin.credential.cert('./scripts/serviceAccountKey.json'),
 });
 const db = admin.firestore();
 
@@ -26,11 +26,11 @@ const ALADIN_KEY = process.env.ALADIN_KEY;
   검색어.
   변경 후 실행하시면 됩니다.
 */
-const SEARCH_QUERY = "자바스크립트";
+const SEARCH_QUERY = '자바스크립트';
 const fetchBooks = async () => {
   try {
     const response = await axios.get(
-      "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx",
+      'http://www.aladin.co.kr/ttb/api/ItemSearch.aspx',
       {
         params: {
           ttbKey: ALADIN_KEY, // 알라딘 API 키 (.env에 저장)
@@ -38,7 +38,7 @@ const fetchBooks = async () => {
           start: 1, // 검색 시작 인덱스
           MaxResults: 10, // 한 번에 가져올 최대 개수
           Version: 20131101,
-          output: "JS", // JSON 형식으로 받기
+          output: 'JS', // JSON 형식으로 받기
         },
       }
     );
@@ -48,7 +48,7 @@ const fetchBooks = async () => {
     }
     return [];
   } catch (error) {
-    console.error("Error fetching books from ALADIN API:", error);
+    console.error('Error fetching books from ALADIN API:', error);
     return [];
   }
 };
@@ -59,14 +59,14 @@ const saveBooksToFirestore = async (books) => {
     const batch = db.batch(); // 여러 문서를 한 번에 쓰기 위한 batch
     for (const book of books) {
       // Firestore 문서 ID를 ISBN13 기준으로 설정 (중복 방지)
-      const docRef = db.collection("books").doc(book.isbn13 || book.isbn);
+      const docRef = db.collection('books').doc(book.isbn13 || book.isbn);
 
       // Firestore에 저장할 데이터 구조 정의
       const bookData = {
         title: book.title,
         author: book.author,
         publisher: book.publisher,
-        categoryName: book.categoryName || "기타",
+        categoryName: book.categoryName || '기타',
         pubDate: book.pubDate,
         priceStandard: book.priceStandard,
         cover: book.cover,
@@ -78,26 +78,26 @@ const saveBooksToFirestore = async (books) => {
       batch.set(docRef, bookData, { merge: true });
     }
     await batch.commit();
-    console.log("Successfully saved books to Firestore.");
+    console.log('Successfully saved books to Firestore.');
   } catch (error) {
-    console.error("Error saving books to Firestore:", error);
+    console.error('Error saving books to Firestore:', error);
   }
 };
 
 // 전체 실행 흐름
 const main = async () => {
   if (!ALADIN_KEY) {
-    console.error("Please create a .env file and add your ALADING KEY to it.");
+    console.error('Please create a .env file and add your ALADING KEY to it.');
     return;
   }
 
-  console.log("Fetching books from ALADIN API...");
+  console.log('Fetching books from ALADIN API...');
   const books = await fetchBooks();
   if (books.length > 0) {
     console.log(`Fetched ${books.length} books.`);
     await saveBooksToFirestore(books);
   } else {
-    console.log("No books fetched.");
+    console.log('No books fetched.');
   }
 };
 
