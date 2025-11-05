@@ -7,15 +7,25 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# Dependency directories
+node_modules/
+
+# Production build
+dist/
+build/
+dist-ssr/
+
+# Local environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
@@ -23,8 +33,25 @@ dist-ssr
 *.sln
 *.sw?
 
-.env
-.env.local
-.env.*.local
+# Optional npm cache directory
+.npm/
 
+# Mac system files
+*.DS_Store
+
+# Temporary files
+*.local
+*.tmp
+*.swp
+
+# Firebase / Service account keys
 scripts/serviceAccountKey.json
+
+# Coverage reports (Jest, Cypress, etc.)
+coverage/
+cypress/videos/
+cypress/screenshots/
+
+# Misc
+*.bak
+*.orig
