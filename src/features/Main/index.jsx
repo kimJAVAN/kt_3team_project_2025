@@ -6,9 +6,15 @@ import Banner from './components/Banner';
 
 // 메인 페이지
 const Main = () => {
+  const navItems = [
+    { label: '국내도서' },
+    { label: '해외도서' },
+    { label: '11월 추천도서' },
+    { label: '계절도서' },
+  ];
   return (
     <Container>
-      <Navigation />
+      <Navigation items={navItems} activeIndex={0} sticky />
       <Banner />
     </Container>
   );

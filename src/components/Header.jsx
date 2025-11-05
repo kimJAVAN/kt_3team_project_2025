@@ -15,7 +15,7 @@ import Logo from '../assets/logo.png';
 
 export default function Header() {
   return (
-    <Container maxW="100%" my={6} borderBottom={'1px solid #eee'} pb={2}>
+    <Container my={6} borderBottom={'1px solid #eee'} p={4}>
       <HStack maxW="1200px" justifyContent="space-between" alignItems="center">
         <Image
           src={Logo}
