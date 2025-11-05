@@ -3,6 +3,7 @@
 import { Container } from '@chakra-ui/react';
 import Navigation from './components/Navigation';
 import Banner from './components/Banner';
+import Bestseller from './components/Bestseller';
 
 // 메인 페이지
 const Main = () => {
@@ -16,6 +17,7 @@ const Main = () => {
     <Container>
       <Navigation items={navItems} activeIndex={0} sticky />
       <Banner />
+      <Bestseller />
     </Container>
   );
 };
