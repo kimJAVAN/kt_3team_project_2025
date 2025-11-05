@@ -16,7 +16,7 @@ import Logo from '../assets/logo.png';
 export default function Header() {
   return (
     <Container my={6} borderBottom={'1px solid #eee'} p={4}>
-      <HStack maxW="1200px" justifyContent="space-between" alignItems="center">
+      <HStack justifyContent="space-between" alignItems="center">
         <Image
           src={Logo}
           alt="사이트 로고"
