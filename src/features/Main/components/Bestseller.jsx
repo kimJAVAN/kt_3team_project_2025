@@ -1,15 +1,21 @@
 import {
   Box,
   Button,
+  CloseButton,
   Container,
+  Dialog,
   Flex,
   Grid,
   Icon,
   IconButton,
   Image,
+  Portal,
   Text,
 } from '@chakra-ui/react';
+import { useState } from 'react';
 import { IoIosHeartEmpty } from 'react-icons/io';
+import { useNavigate } from 'react-router';
+import Modal from '../../../components/Modal';
 
 const Bestseller = () => {
   const bookData = [
@@ -84,6 +90,8 @@ const Bestseller = () => {
       price: 30000,
     },
   ];
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
   return (
     <Container p="0" margin="100px 0">
       <Text fontSize="var(--font-larger)" fontWeight="600">
@@ -128,12 +136,31 @@ const Bestseller = () => {
               </Text>
             </Flex>
             <Flex alignItems="center" justifyContent="space-between" gap="2">
-              <Button bgColor="var(--sub-color)" flex="1">
+              <Button
+                bgColor="var(--sub-color)"
+                flex="1"
+                onClick={() => setOpen(true)} // ← 클릭 시 열기
+              >
                 장바구니
               </Button>
+
               <Button bgColor="var(--main-color)" flex="1">
                 바로구매
               </Button>
+              <Modal
+                title="장바구니 이동"
+                open={open}
+                onOpenChange={(e) => setOpen(e.open)} // Chakra Dialog는 e.open으로 상태 전달
+                confirmText="장바구니 이동"
+                cancelText="취소"
+                onConfirm={() => {
+                  navigate('/cart');
+                  setOpen(false);
+                }}
+                size="xl"
+              >
+                장바구니 페이지로 이동하시겠습니까?
+              </Modal>
             </Flex>
           </Box>
         ))}
