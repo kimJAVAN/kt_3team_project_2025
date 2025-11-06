@@ -75,6 +75,7 @@ const EditBookModal = ({ book, handleUpdateBook, handleDeleteBook }) => {
                     justifyContent="end"
                     alignItems="center"
                     gap="10px"
+                    min="0"
                   >
                     재고
                     <HStack
