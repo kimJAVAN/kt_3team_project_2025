@@ -1,9 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Box, Button, Heading, Input, Textarea, Stack, HStack, Flex, Text, Image } from '@chakra-ui/react';
+import { Box, Button, Heading, Input, Stack, HStack, Flex, Text, Image } from '@chakra-ui/react';
 import { WidgetCheckoutPage } from './WidgetCheckout';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function PaymentPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Cart에서 전달받은 데이터
+  const cartData = location.state || {};
+  const [orderItems, setOrderItems] = useState(cartData.orderItems || []);
+  const [cartTotalPrice, setCartTotalPrice] = useState(cartData.totalItemPrice || 0);
+  const [cartDeliveryFee, setCartDeliveryFee] = useState(cartData.deliveryFee || 0);
+
   const [customerType, setCustomerType] = useState('existing');
   const [addressType, setAddressType] = useState('existing');
   const [deliveryRequest, setDeliveryRequest] = useState('');
@@ -16,10 +25,22 @@ export default function PaymentPage() {
   const [phone1, setPhone1] = useState('010');
   const [phone2, setPhone2] = useState('');
   const [phone3, setPhone3] = useState('');
-  const navigate = useNavigate();
+
+  const [postcode, setPostcode] = useState('');
+  const [address, setAddress] = useState('');
+  const [detailAddress, setDetailAddress] = useState('');
 
   const phoneNumber = `${phone1}${phone2}${phone3}`;
 
+  // 장바구니가 비어있으면 장바구니로 리다이렉트
+  useEffect(() => {
+    if (!orderItems || orderItems.length === 0) {
+      alert('장바구니에 상품이 없습니다.');
+      navigate('/kt_3team_project_2025/cart');
+    }
+  }, [orderItems, navigate]);
+
+  // 스크롤 고정
   useEffect(() => {
     const handleScroll = () => {
       setIsSticky(window.scrollY > 100);
@@ -28,19 +49,33 @@ export default function PaymentPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const orderItems = [
-    { id: 1, title: '책 제목 1', image: 'https://via.placeholder.com/80', quantity: 2, price: 25 },
-    { id: 2, title: '책 제목 2', image: 'https://via.placeholder.com/80', quantity: 1, price: 20 }
-  ];
+  // 다음 주소 API 스크립트 로드
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
+
+  // 주소 검색 함수
+  const handlePostcode = () => {
+    new window.daum.Postcode({
+      oncomplete: function(data) {
+        setPostcode(data.zonecode);
+        setAddress(data.roadAddress || data.jibunAddress);
+        document.getElementById("detailAddress")?.focus();
+      }
+    }).open();
+  };
 
   const totalItemPrice = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const deliveryFee = 30;
-  const remoteFee = isRemote ? 32 : 0;
+  const deliveryFee = cartDeliveryFee;
+  const remoteFee = isRemote ? 5000 : 0;
   const finalPrice = totalItemPrice + deliveryFee + remoteFee;
 
   const orderName = orderItems.length > 1 
     ? `${orderItems[0].title} 외 ${orderItems.length - 1}건`
-    : orderItems[0].title;
+    : orderItems[0]?.title || '';
 
   const handlePaymentClick = () => {
     if (!agreed) {
@@ -52,91 +87,88 @@ export default function PaymentPage() {
       return;
     }
     
-    // 결제 시 사용할 데이터를 localStorage에 저장 (결제 성공 후 사용)
     const paymentData = {
-      phoneNumber: phoneNumber,
-      orderName: orderName,
-      finalPrice: finalPrice,
-      orderItems: orderItems,
+      phoneNumber,
+      orderName,
+      finalPrice,
+      orderItems,
+      address: `${address} ${detailAddress}`,
+      postcode,
     };
     
     localStorage.setItem("paymentData", JSON.stringify(paymentData));
-    
-    // 토스 결제 위젯 실행 (navigate 제거!)
     setTriggerPayment(prev => prev + 1);
   };
 
   return (
     <Box bg="white" minH="100vh" py="40px">
-      <Box maxW="1400px" mx="auto" px="20px">
+      <Box maxW="1200px" mx="auto" px="20px">
         <Heading fontSize="32px" mb="32px" color="#000">
           주문 / 결제
         </Heading>
 
         <Flex gap="20px" direction={{ base: 'column', lg: 'row' }}>
-          {/* 좌측 영역 (70%) */}
           <Stack flex="7" gap="25px">
             {/* 주문 고객 */}
             <Box bg="var(--bg-color)" p="24px" borderRadius="15px">
               <Heading fontSize="24px" mb="16px" color="#000">
                 주문 고객
               </Heading>
-              <HStack gap="24px" mb="16px">
-                <Button
-                  bg={customerType === 'existing' ? 'var(--main-color)' : 'white'}
-                  color={customerType === 'existing' ? '#FFFFFF' : '#000'}
-                  onClick={() => setCustomerType('existing')}
-                  fontSize="16px"
-                  borderRadius="10px"
-                  border={customerType === 'existing' ? 'none' : '1px solid #ddd'}
-                >
-                  기존 정보
-                </Button>
-                <Button
-                  bg={customerType === 'new' ? 'var(--main-color)' : 'white'}
-                  color={customerType === 'new' ? '#FFFFFF' : '#000'}
-                  onClick={() => setCustomerType('new')}
-                  fontSize="16px"
-                  borderRadius="10px"
-                  border={customerType === 'new' ? 'none' : '1px solid #ddd'}
-                >
-                  신규 수령인
-                </Button>
-              </HStack>
               <Stack gap="16px">
-                <Input placeholder="이름" bg="white" fontSize="16px" borderRadius="15px" />
-                <HStack gap="8px">
-                  <Input 
-                    placeholder="010" 
-                    bg="white" 
-                    fontSize="16px" 
+                <Flex align="center" mb="10px">
+                  <Text minW="60px" textAlign="right" mr="10px">
+                    이름 
+                  </Text>
+                  <Input
+                    placeholder="이름"
+                    bg="white"
+                    fontSize="16px"
                     borderRadius="15px"
-                    maxLength="3"
-                    value={phone1}
-                    onChange={(e) => setPhone1(e.target.value.replace(/[^0-9]/g, ''))}
+                    w="250px"
                   />
-                  <Text fontSize="20px" color="#000">-</Text>
-                  <Input 
-                    placeholder="0000" 
-                    bg="white" 
-                    fontSize="16px" 
+                </Flex>
+
+                <Flex align="center" mb="10px">
+                  <Text minW="60px" textAlign="right" mr="10px">
+                    연락처  
+                  </Text>
+                  <HStack gap="8px">
+                    <Input
+                      value={phone1}
+                      onChange={(e) => setPhone1(e.target.value.replace(/[^0-9]/g, ""))}
+                      maxLength="3"
+                      w="60px"
+                    />
+                    <Text>-</Text>
+                    <Input
+                      value={phone2}
+                      onChange={(e) => setPhone2(e.target.value.replace(/[^0-9]/g, ""))}
+                      maxLength="4"
+                      w="70px"
+                    />
+                    <Text>-</Text>
+                    <Input
+                      value={phone3}
+                      onChange={(e) => setPhone3(e.target.value.replace(/[^0-9]/g, ""))}
+                      maxLength="4"
+                      w="70px"
+                    />
+                  </HStack>
+                </Flex>
+
+                <Flex align="center">
+                  <Text minW="60px" textAlign="right" mr="10px">
+                    이메일 
+                  </Text>
+                  <Input
+                    placeholder="이메일"
+                    bg="white"
+                    fontSize="16px"
                     borderRadius="15px"
-                    maxLength="4"
-                    value={phone2}
-                    onChange={(e) => setPhone2(e.target.value.replace(/[^0-9]/g, ''))}
+                    w="250px"
                   />
-                  <Text fontSize="20px" color="#000">-</Text>
-                  <Input 
-                    placeholder="0000" 
-                    bg="white" 
-                    fontSize="16px" 
-                    borderRadius="15px"
-                    maxLength="4"
-                    value={phone3}
-                    onChange={(e) => setPhone3(e.target.value.replace(/[^0-9]/g, ''))}
-                  />
-                </HStack>
-                <Input placeholder="이메일" bg="white" fontSize="16px" borderRadius="15px" />
+                </Flex>
+
               </Stack>
             </Box>
 
@@ -145,90 +177,32 @@ export default function PaymentPage() {
               <Heading fontSize="24px" mb="16px" color="#000">
                 배송지
               </Heading>
-              <HStack gap="24px" mb="16px">
-                <Button
-                  bg={addressType === 'existing' ? 'var(--main-color)' : 'white'}
-                  color={addressType === 'existing' ? '#FFFFFF' : '#000'}
-                  onClick={() => setAddressType('existing')}
-                  fontSize="16px"
-                  borderRadius="10px"
-                  border={addressType === 'existing' ? 'none' : '1px solid #ddd'}
-                >
-                  등록된 배송지
-                </Button>
-                <Button
-                  bg={addressType === 'new' ? 'var(--main-color)' : 'white'}
-                  color={addressType === 'new' ? '#FFFFFF' : '#000'}
-                  onClick={() => setAddressType('new')}
-                  fontSize="16px"
-                  borderRadius="10px"
-                  border={addressType === 'new' ? 'none' : '1px solid #ddd'}
-                >
-                  신규 입력
-                </Button>
-              </HStack>
-              {addressType === 'existing' ? (
-                <select style={{
-                  width: '100%',
-                  padding: '12px',
-                  background: 'white',
-                  fontSize: '16px',
-                  borderRadius: '15px',
-                  border: '1px solid #e2e8f0'
-                }}>
-                  <option value="">배송지 선택</option>
-                  <option value="home">집</option>
-                  <option value="office">회사</option>
-                </select>
-              ) : (
-                <Stack gap="16px">
-                  <Input placeholder="우편번호" bg="white" fontSize="16px" borderRadius="15px" />
-                  <Input placeholder="주소" bg="white" fontSize="16px" borderRadius="15px" />
-                  <Input placeholder="상세주소" bg="white" fontSize="16px" borderRadius="15px" />
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '16px' }}>
-                    <input
-                      type="checkbox"
-                      onChange={(e) => setIsRemote(e.target.checked)}
-                      style={{ width: '18px', height: '18px' }}
-                    />
-                    도서산간 지역
-                  </label>
-                </Stack>
-              )}
-            </Box>
 
-            {/* 배송 요청사항 */}
-            <Box bg="var(--bg-color)" p="24px" borderRadius="15px">
-              <Heading fontSize="24px" mb="16px" color="#000">
-                배송 요청사항
-              </Heading>
-              <select
-                style={{
-                  width: '100%',
-                  padding: '12px',
-                  background: 'white',
-                  fontSize: '16px',
-                  borderRadius: '15px',
-                  border: '1px solid #e2e8f0',
-                  marginBottom: '16px'
-                }}
-                onChange={(e) => setDeliveryRequest(e.target.value)}
-              >
-                <option value="">요청사항 선택</option>
-                <option value="door">문앞에 놓아주세요</option>
-                <option value="security">경비실에 맡겨주세요</option>
-                <option value="call">배송 전 연락주세요</option>
-                <option value="custom">직접 입력</option>
-              </select>
-              {deliveryRequest === 'custom' && (
-                <Textarea
-                  placeholder="직접 입력하세요"
-                  bg="white"
-                  fontSize="16px"
-                  borderRadius="15px"
-                  value={customRequest}
-                  onChange={(e) => setCustomRequest(e.target.value)}
-                />
+              <HStack gap="24px" mb="16px">
+                <Button onClick={() => setAddressType('existing')} bg={addressType==='existing'?'var(--main-color)':'white'} color={addressType==='existing'?'#fff':'#000'}>등록된 배송지</Button>
+                <Button onClick={() => setAddressType('new')} bg={addressType==='new'?'var(--main-color)':'white'} color={addressType==='new'?'#fff':'#000'}>신규 입력</Button>
+              </HStack>
+
+              {/* 배송지 - 주소찾기 api  */}
+              {addressType === 'new' && (
+                <Stack gap="12px">
+                  <HStack>
+                    <Input placeholder="우편번호" value={postcode} readOnly />
+                    <Button onClick={handlePostcode} bg="var(--main-color)" color="white">
+                      주소찾기
+                    </Button>
+                  </HStack>
+                  <Input placeholder="주소" value={address} readOnly />
+                  <Input id="detailAddress" placeholder="상세주소" value={detailAddress} onChange={(e)=>setDetailAddress(e.target.value)} />
+
+                  {/* 추후에 도서산간 지역 배송비 별도로 할 시 주석 해제 필요 */}
+
+                  {/* <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '16px' }}>
+                    <input type="checkbox" onChange={(e) => setIsRemote(e.target.checked)} style={{ width: '18px', height: '18px' }}/>
+                    도서산간 지역
+                  </label> */}
+
+                </Stack>
               )}
             </Box>
 
@@ -237,94 +211,78 @@ export default function PaymentPage() {
               <Heading fontSize="24px" mb="16px" color="#000">
                 결제방법 선택
               </Heading>
-              <Stack gap="12px">
-                <WidgetCheckoutPage
-                  amount={finalPrice}
-                  orderName={orderName}
-                  onReady={setWidgetReady}
-                  triggerPayment={triggerPayment}
-                />
-              </Stack>
+              <WidgetCheckoutPage
+                amount={finalPrice}
+                orderName={orderName}
+                onReady={setWidgetReady}
+                triggerPayment={triggerPayment}
+              />
             </Box>
           </Stack>
 
-          {/* 우측 영역 (30%) */}
-          <Box
-            flex="3"
-            position={isSticky ? 'sticky' : 'relative'}
-            top={isSticky ? '20px' : '0'}
-            h="fit-content"
-          >
+          {/* 우측 영역 (30%) */} 
+          <Box flex="3" position={isSticky ? 'sticky' : 'relative'} top={isSticky ? '20px' : '0'} h="fit-content" > 
             <Stack gap="25px">
               {/* 주문정보 */}
-              <Box bg="var(--bg-color)" p="24px" borderRadius="15px">
-                <Heading fontSize="24px" mb="16px" color="#000">
-                  주문정보
-                </Heading>
+              <Box bg="var(--bg-color)" p="24px" borderRadius="15px"> 
+                <Heading fontSize="24px" mb="16px" color="#000"> 주문정보 </Heading> 
                 <Stack gap="16px">
-                  {orderItems.map((item) => (
-                    <HStack key={item.id} gap="16px" align="start">
-                      <Image src={item.image} boxSize="80px" borderRadius="10px" objectFit="cover" />
-                      <Stack gap="4px" flex="1">
-                        <Text fontSize="16px" fontWeight="bold" color="#000">
-                          {item.title}
+                  {orderItems.map((item) => ( 
+                    <HStack key={item.id} gap="16px" align="start"> 
+                      <Image src={item.image} boxSize="80px" borderRadius="10px" objectFit="cover" /> 
+                      <Stack gap="4px" flex="1"> 
+                        <Text fontSize="16px" fontWeight="bold" color="#000"> 
+                          {item.title} 
                         </Text>
-                        <Text fontSize="14px" color="#666">
-                          {item.quantity}권
-                        </Text>
-                        <Text fontSize="16px" color="#000">
-                          {item.price.toLocaleString()}원
-                        </Text>
-                        <Text fontSize="16px" fontWeight="bold" color="var(--main-color)">
-                          총 {(item.price * item.quantity).toLocaleString()}원
-                        </Text>
+                        <Text fontSize="14px" color="#666"> 
+                          {item.quantity}권 
+                        </Text> 
+                        <Text fontSize="16px" color="#000"> 
+                          {item.price.toLocaleString()}원 
+                        </Text> 
+                        <Text fontSize="16px" fontWeight="bold" color="var(--main-color)"> 
+                          총 {(item.price * item.quantity).toLocaleString()}원 
+                        </Text> 
                       </Stack>
                     </HStack>
                   ))}
-                </Stack>
+                </Stack> 
               </Box>
-
-              {/* 최종 결제 금액 */}
-              <Box bg="var(--bg-color)" p="24px" borderRadius="15px">
-                <Heading fontSize="24px" mb="16px" color="#000">
-                  최종 결제 금액
-                </Heading>
-                <Stack gap="12px">
-                  <Flex justify="space-between">
-                    <Text fontSize="16px" color="#000">상품금액</Text>
-                    <Text fontSize="16px" color="#000">{totalItemPrice.toLocaleString()}원</Text>
-                  </Flex>
-                  <Flex justify="space-between">
-                    <Text fontSize="16px" color="#000">배송비</Text>
-                    <Text fontSize="16px" color="#000">+{deliveryFee.toLocaleString()}원</Text>
+              
+              {/* 최종 결제 금액 */} 
+              <Box bg="var(--bg-color)" p="24px" borderRadius="15px"> 
+                <Heading fontSize="24px" mb="16px" color="#000"> 최종 결제 금액 </Heading> 
+                <Stack gap="12px"> 
+                  <Flex justify="space-between"> 
+                    <Text fontSize="16px" color="#000">상품금액</Text> 
+                    <Text fontSize="16px" color="#000">{totalItemPrice.toLocaleString()}원</Text> 
+                  </Flex> 
+                  <Flex justify="space-between"> 
+                    <Text fontSize="16px" color="#000">배송비</Text> 
+                    <Text fontSize="16px" color="#000">
+                      {deliveryFee === 0 ? '무료' : `+${deliveryFee.toLocaleString()}원`}
+                    </Text> 
                   </Flex>
                   {isRemote && (
                     <Flex justify="space-between">
-                      <Text fontSize="16px" color="#000">도서산간</Text>
+                      <Text fontSize="16px" color="#000">도서산간</Text> 
                       <Text fontSize="16px" color="#000">+{remoteFee.toLocaleString()}원</Text>
                     </Flex>
                   )}
-                  <Box h="1px" bg="var(--sub-color)" my="8px" />
+                  <Box h="1px" bg="var(--sub-color)" my="8px" /> 
                   <Flex justify="space-between">
-                    <Text fontSize="24px" fontWeight="bold" color="#000">
-                      최종 결제 금액
-                    </Text>
-                    <Text fontSize="24px" fontWeight="bold" color="var(--main-color)">
-                      {finalPrice.toLocaleString()}원
-                    </Text>
+                    <Text fontSize="24px" fontWeight="bold" color="#000"> 최종 결제 금액 </Text> 
+                    <Text fontSize="24px" fontWeight="bold" color="var(--main-color)"> 
+                      {finalPrice.toLocaleString()}원 
+                    </Text> 
                   </Flex>
                 </Stack>
               </Box>
-
-              {/* 구매 조건 및 결제 진행 동의 */}
+              
+              {/* 구매 조건 및 결제 진행 동의 */} 
               <Box bg="var(--bg-color)" p="24px" borderRadius="15px">
                 <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '16px', marginBottom: '16px', cursor: 'pointer' }}>
-                  <input 
-                    type="checkbox" 
-                    style={{ width: '18px', height: '18px' }}
-                    checked={agreed}
-                    onChange={(e) => setAgreed(e.target.checked)}
-                  />
+                  <input type="checkbox" style={{ width: '18px', height: '18px' }} checked={agreed} onChange={(e) => setAgreed(e.target.checked)} /> 
                   구매 조건 및 결제 진행 동의
                 </label>
                 <Box bg="white" p="16px" borderRadius="10px" fontSize="14px" color="#666">
@@ -333,20 +291,20 @@ export default function PaymentPage() {
                   <Text>• 전자금융거래 이용약관 동의</Text>
                 </Box>
               </Box>
-
+              
               {/* 결제하기 버튼 */}
-              <Button
-                bg={agreed && widgetReady ? "var(--main-color)" : "#ccc"}
-                color="#FFFFFF"
-                fontSize="24px"
-                h="60px"
-                borderRadius="15px"
-                _hover={{ bg: agreed && widgetReady ? 'var(--main-color)' : '#ccc' }}
-                onClick={handlePaymentClick}
-                isDisabled={!agreed || !widgetReady}
+              <Button 
+                bg={agreed && widgetReady ? "var(--main-color)" : "#ccc"} 
+                color="#fff" 
+                fontSize="24px" 
+                h="60px" 
+                borderRadius="15px" 
+                _hover={{ bg: agreed && widgetReady ? 'var(--sub-color)' : '#ccc' }} 
+                onClick={handlePaymentClick} 
+                isDisabled={!agreed || !widgetReady} 
                 cursor={agreed && widgetReady ? 'pointer' : 'not-allowed'}
-              >
-                {widgetReady ? '결제하기' : '결제 준비 중...'}
+              > 
+                {widgetReady ? '결제하기' : '결제 준비 중...'} 
               </Button>
             </Stack>
           </Box>

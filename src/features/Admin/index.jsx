@@ -26,9 +26,9 @@ const Admin = () => {
     TAB_COMPONENTS[tabValues[tabIndex]] ?? (() => <Box>준비 중(스켈레톤)</Box>);
 
   return (
-    <Box as="main" p="20px" h="100dvh">
+    <Box as="main" p="20px" h="100dvh" display="flex" gap="20px">
       <SideBar tabIndex={tabIndex} handleClickTab={handleClickTab} />
-      <Box ml="240px" flex="1">
+      <Box flex="1">
         <ActiveComponent />
       </Box>
     </Box>
