@@ -7,6 +7,7 @@ const Cart = () => {
   const navigate = useNavigate();
 
   const [items, setItems] = useState([
+    // TODO :: 상품 불러와서 채우기 - USER DATA 랑 연결해서 유저가 장바구니 담을 수 있게 구성
     {
       id: 1,
       name: "자바스크립트",
@@ -21,7 +22,7 @@ const Cart = () => {
       price: 180,
       count: 1,
       image: "https://via.placeholder.com/80",
-      selected: false,
+      selected: true,
     },
   ]);
 
@@ -106,12 +107,12 @@ const Cart = () => {
   const totalAmount = itemsTotal + shippingFee;
 
   return (
-    <Box bg="var(--bg-color)" minH="100vh" py="40px">
+    <Box  minH="100vh" py="40px">
       <Box maxW="1200px" mx="auto" px="20px">
         <Flex gap="40px" direction={{ base: "column", lg: "row" }}>
           {/* 왼쪽 영역 - 장바구니 목록 */}
-          <Box flex="2" bg="white" p="20px" borderRadius="16px" boxShadow="sm">
-            <Heading size="xl" mb="20px" color="black">
+          <Box flex="2" bg="var(--bg-color)" p="20px" borderRadius="16px" boxShadow="sm">
+            <Heading size="xl" mb="20px" color="black" fontSize={'24px'}>
               장바구니
             </Heading>
 
@@ -132,7 +133,7 @@ const Cart = () => {
                   variant="outline" 
                   onClick={handleDeleteSelected}
                   bg="var(--sub-color)"
-                  color="var(--main-color)"
+                  color="#fff"
                   borderColor="var(--sub-color)"
                   _hover={{ bg: "#6d7a58" }}
                 >
@@ -143,7 +144,7 @@ const Cart = () => {
                   variant="outline" 
                   onClick={handleDeleteAll}
                   bg="var(--sub-color)"
-                  color="var(--main-color)"
+                  color="#fff"
                   borderColor="var(--sub-color)"
                   _hover={{ bg: "#6d7a58" }}
                 >
@@ -195,7 +196,7 @@ const Cart = () => {
                           onClick={() => handleCountChange(item.id, -1)}
                           disabled={item.count <= 1}
                           bg="var(--sub-color)"
-                          color="var(--main-color)"
+                          color="#fff"
                           _hover={{ bg: "#6d7a58" }}
                         >
                           <FiMinus />
@@ -208,7 +209,7 @@ const Cart = () => {
                           size="sm"
                           onClick={() => handleCountChange(item.id, 1)}
                           bg="var(--sub-color)"
-                          color="var(--main-color)"
+                          color="#fff"
                           _hover={{ bg: "#6d7a58" }}
                         >
                           <FiPlus />
@@ -225,7 +226,7 @@ const Cart = () => {
           {/* 오른쪽 영역 - 결제정보 */}
           <Box
             flex="1"
-            bg="white"
+            bg="var(--bg-color)"
             p="20px"
             borderRadius="16px"
             boxShadow="sm"
@@ -233,7 +234,7 @@ const Cart = () => {
             position={{ lg: "sticky" }}
             top="20px"
           >
-            <Heading size="xl" mb="20px" color="black">
+            <Heading size="xl" mb="20px" color="black" fontSize={'24px'}>
               결제정보
             </Heading>
 
@@ -270,9 +271,9 @@ const Cart = () => {
               width="100%"
               onClick={handlePay}
               disabled={selectedItems.length === 0}
-              bg="var(--sub-color)"
-              color="var(--main-color)"
-              _hover={{ bg: "#6d7a58" }}
+              bg="var(--main-color)"
+              color="var(--bg-color)"
+              _hover={{ bg: "var(--bg-color)" }}
             >
               주문하기
             </Button>

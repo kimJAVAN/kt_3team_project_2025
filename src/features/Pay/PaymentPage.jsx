@@ -102,7 +102,7 @@ export default function PaymentPage() {
 
   return (
     <Box bg="white" minH="100vh" py="40px">
-      <Box maxW="1400px" mx="auto" px="20px">
+      <Box maxW="1200px" mx="auto" px="20px">
         <Heading fontSize="32px" mb="32px" color="#000">
           주문 / 결제
         </Heading>
@@ -115,15 +115,60 @@ export default function PaymentPage() {
                 주문 고객
               </Heading>
               <Stack gap="16px">
-                <Input placeholder="이름" bg="white" fontSize="16px" borderRadius="15px" />
-                <HStack gap="8px">
-                  <Input value={phone1} onChange={(e)=>setPhone1(e.target.value.replace(/[^0-9]/g,''))} maxLength="3"/>
-                  <Text>-</Text>
-                  <Input value={phone2} onChange={(e)=>setPhone2(e.target.value.replace(/[^0-9]/g,''))} maxLength="4"/>
-                  <Text>-</Text>
-                  <Input value={phone3} onChange={(e)=>setPhone3(e.target.value.replace(/[^0-9]/g,''))} maxLength="4"/>
-                </HStack>
-                <Input placeholder="이메일" bg="white" fontSize="16px" borderRadius="15px" />
+                <Flex align="center" mb="10px">
+                  <Text minW="60px" textAlign="right" mr="10px">
+                    이름 
+                  </Text>
+                  <Input
+                    placeholder="이름"
+                    bg="white"
+                    fontSize="16px"
+                    borderRadius="15px"
+                    w="250px"
+                  />
+                </Flex>
+
+                <Flex align="center" mb="10px">
+                  <Text minW="60px" textAlign="right" mr="10px">
+                    연락처  
+                  </Text>
+                  <HStack gap="8px">
+                    <Input
+                      value={phone1}
+                      onChange={(e) => setPhone1(e.target.value.replace(/[^0-9]/g, ""))}
+                      maxLength="3"
+                      w="60px"
+                    />
+                    <Text>-</Text>
+                    <Input
+                      value={phone2}
+                      onChange={(e) => setPhone2(e.target.value.replace(/[^0-9]/g, ""))}
+                      maxLength="4"
+                      w="70px"
+                    />
+                    <Text>-</Text>
+                    <Input
+                      value={phone3}
+                      onChange={(e) => setPhone3(e.target.value.replace(/[^0-9]/g, ""))}
+                      maxLength="4"
+                      w="70px"
+                    />
+                  </HStack>
+                </Flex>
+
+                <Flex align="center">
+                  <Text minW="60px" textAlign="right" mr="10px">
+                    이메일 
+                  </Text>
+                  <Input
+                    placeholder="이메일"
+                    bg="white"
+                    fontSize="16px"
+                    borderRadius="15px"
+                    w="250px"
+                  />
+                </Flex>
+
               </Stack>
             </Box>
 
@@ -138,6 +183,7 @@ export default function PaymentPage() {
                 <Button onClick={() => setAddressType('new')} bg={addressType==='new'?'var(--main-color)':'white'} color={addressType==='new'?'#fff':'#000'}>신규 입력</Button>
               </HStack>
 
+              {/* 배송지 - 주소찾기 api  */}
               {addressType === 'new' && (
                 <Stack gap="12px">
                   <HStack>
@@ -148,10 +194,14 @@ export default function PaymentPage() {
                   </HStack>
                   <Input placeholder="주소" value={address} readOnly />
                   <Input id="detailAddress" placeholder="상세주소" value={detailAddress} onChange={(e)=>setDetailAddress(e.target.value)} />
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '16px' }}>
+
+                  {/* 추후에 도서산간 지역 배송비 별도로 할 시 주석 해제 필요 */}
+
+                  {/* <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '16px' }}>
                     <input type="checkbox" onChange={(e) => setIsRemote(e.target.checked)} style={{ width: '18px', height: '18px' }}/>
                     도서산간 지역
-                  </label>
+                  </label> */}
+
                 </Stack>
               )}
             </Box>
@@ -245,7 +295,7 @@ export default function PaymentPage() {
               {/* 결제하기 버튼 */}
               <Button 
                 bg={agreed && widgetReady ? "var(--main-color)" : "#ccc"} 
-                color="#FFFFFF" 
+                color="#fff" 
                 fontSize="24px" 
                 h="60px" 
                 borderRadius="15px" 
