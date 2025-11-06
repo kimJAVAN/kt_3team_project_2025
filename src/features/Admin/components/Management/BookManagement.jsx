@@ -1,10 +1,26 @@
 import { useBookList } from "@/hooks/useBookList";
 import { Box, Button, Text, ScrollArea, Flex, Image } from "@chakra-ui/react";
+import EditBookModal from "../EditBookModal";
+import { useUpdateBook } from "../../hooks/useUpdateBook";
 
 const BookManagement = () => {
   const { books, fetchBooks, hasNext, setBooks } = useBookList({
     pageSize: 20,
   });
+  const { updateBook, loading, error } = useUpdateBook();
+  const handleUpdateBook = (bookId, updatedFields) => {
+    setBooks((prev) =>
+      prev.map((book) =>
+        book.id === bookId ? { ...book, ...updatedFields } : book
+      )
+    );
+    updateBook(bookId, updatedFields);
+  };
+
+  const handleDeleteBook = (bookId) => {
+    setBooks((prev) => prev.filter((book) => book.id !== bookId));
+    // TODO 서버에 삭제 요청
+  };
 
   return (
     <Box as="section" h="100%" display="flex" flexDirection="column" gap="20px">
@@ -51,6 +67,11 @@ const BookManagement = () => {
                   </Flex>
                   <Flex align="center" gap="10px" shrink="0">
                     <Text>재고 : {book.stock}</Text>
+                    <EditBookModal
+                      book={book}
+                      handleUpdateBook={handleUpdateBook}
+                      handleDeleteBook={handleDeleteBook}
+                    />
                   </Flex>
                 </Flex>
               ))}
