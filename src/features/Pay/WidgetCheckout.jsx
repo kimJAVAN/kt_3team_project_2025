@@ -92,8 +92,7 @@ export function WidgetCheckoutPage({
         orderId: generateRandomString(),
         orderName: orderName,
         successUrl: `${window.location.origin}/kt_3team_project_2025/pay/success`,
-
-        failUrl: `${window.location.origin}/kt_3team_project_2025/pay/fail`,
+        failUrl: `${baseUrl}/pay/fail`,
         customerEmail: 'customer123@gmail.com',
         customerName: '김토스',
       });
