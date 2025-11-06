@@ -80,6 +80,7 @@ export default function PaymentPage() {
   const handlePaymentClick = () => {
     if (!agreed) {
       alert('구매 조건 및 결제 진행에 동의해주세요.');
+      console.log('test')
       return;
     }
     if (!widgetReady) {
