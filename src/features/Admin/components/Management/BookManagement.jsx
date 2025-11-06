@@ -2,12 +2,23 @@ import { useBookList } from "@/hooks/useBookList";
 import { Box, Button, Text, ScrollArea, Flex, Image } from "@chakra-ui/react";
 import EditBookModal from "../EditBookModal";
 import { useUpdateBook } from "../../hooks/useUpdateBook";
+import { useDeleteBook } from "../../hooks/useDeleteBook";
 
 const BookManagement = () => {
   const { books, fetchBooks, hasNext, setBooks } = useBookList({
     pageSize: 20,
   });
-  const { updateBook, loading, error } = useUpdateBook();
+  const {
+    updateBook,
+    loading: updateLoading,
+    error: updateError,
+  } = useUpdateBook();
+  const {
+    deleteBook,
+    loading: deleteLoading,
+    error: deleteError,
+  } = useDeleteBook();
+
   const handleUpdateBook = (bookId, updatedFields) => {
     setBooks((prev) =>
       prev.map((book) =>
@@ -16,10 +27,10 @@ const BookManagement = () => {
     );
     updateBook(bookId, updatedFields);
   };
-
   const handleDeleteBook = (bookId) => {
     setBooks((prev) => prev.filter((book) => book.id !== bookId));
     // TODO 서버에 삭제 요청
+    deleteBook(bookId);
   };
 
   return (
