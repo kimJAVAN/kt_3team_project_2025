@@ -4,6 +4,7 @@ export { default as MainPage } from "./MainPage";
 export { default as AdminPage } from "./AdminPage";
 
 export { default as LoginPage } from "./LoginPage";
+export { default as SignupPage } from "./SignupPage";
 
 // 결제 관련 페이지 (결제, 결제 성공, 결제 실패)
 export { default as PayPage } from './PayPage';

@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Flex, Image } from "@chakra-ui/react";
 import LoginForm from "../components/auth/LoginForm";
-import logo from "../assets/logo.png"; // 로고 이미지 불러오기
+import logo from "../assets/logo.png";
 
 const LoginPage = () => {
   return (
@@ -11,9 +11,10 @@ const LoginPage = () => {
       justify="center"
       width="100vw"
       height="100vh"
-      bg="white"
+      
+      
+        bg={"#FEFAE0"}
     >
-      {/* 🔹 로고 이미지 */}
       <Image
         src={logo}
         alt="README Logo"
@@ -22,13 +23,11 @@ const LoginPage = () => {
         objectFit="contain"
       />
 
-      {/* 🔹 로그인 폼 영역 */}
       <Box
-        bg="gray.50"
         p="48px 64px"
         borderRadius="12px"
         boxShadow="md"
-        backgroundColor={"#FEFAE0"}
+        bg="white"
       >
         <LoginForm />
       </Box>

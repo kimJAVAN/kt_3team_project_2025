@@ -1,6 +1,6 @@
 // routes/router.jsx
 import { createBrowserRouter } from "react-router-dom";
-import { LayoutPage, MainPage, AdminPage, LoginPage, PayPage, PaySuccessPage, PayFailPage, CartPage} from "@/pages";
+import { LayoutPage, MainPage, AdminPage, LoginPage, PayPage, PaySuccessPage, PayFailPage, CartPage, SignupPage } from "@/pages";
 
 const router = createBrowserRouter([
   {
@@ -9,6 +9,10 @@ const router = createBrowserRouter([
       {
         path: "login",
         element: <LoginPage />,
+      },
+      {
+        path: "signup",
+        element: <SignupPage />,
       },
       {
         path: "",
