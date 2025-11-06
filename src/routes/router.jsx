@@ -1,6 +1,6 @@
 // routes/router.jsx
 import { createBrowserRouter } from "react-router-dom";
-import { LayoutPage, MainPage, AdminPage, LoginPage, PayPage, PaySuccessPage, PayFailPage, CartPage, SignupPage } from "@/pages";
+import { LayoutPage, MainPage, AdminPage, LoginPage, PayPage, PaySuccessPage, PayFailPage, CartPage, SignupPage, WishListPage } from "@/pages";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +35,13 @@ const router = createBrowserRouter([
             element: <CartPage />
           }
         ],
+      },
+      {
+        path : 'member',
+        element: <LayoutPage />,
+        children : [
+          { path: "wishlist", element: <WishListPage /> },
+        ]
       },
       {
         path: "admin",
