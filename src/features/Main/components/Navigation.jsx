@@ -1,51 +1,49 @@
-import { memo } from 'react';
-import { Box, Container, HStack, Button } from '@chakra-ui/react';
+import { Box, Container, HStack } from '@chakra-ui/react';
+import { Link } from 'react-router-dom';
 
-const Navigation = memo(function Navigation({
-  items,
-  activeIndex = -1,
-  sticky = true,
-}) {
+const Navigation = () => {
   return (
-    <Box
-      as="nav"
-      aria-label="주요 도서 카테고리"
-      borderBottomWidth="1px"
-      position={sticky ? 'sticky' : 'static'}
-      top={sticky ? 0 : undefined}
-      zIndex={9}
-    >
-      <Container maxW="container.xl" px={{ base: 3, md: 4 }}>
-        <HStack
-          spacing={0}
-          overflowX="auto"
-          py={1}
-          sx={{
-            '::-webkit-scrollbar': { display: 'none' },
-            scrollbarWidth: 'none',
-          }}
-        >
-          {items.map((item, idx) => {
-            const isActive = idx === activeIndex;
-            return (
-              <Button
-                key={`${item.label}-${idx}`}
-                variant="ghost"
-                px={{ base: 3, md: 4 }}
-                py={4}
-                borderRadius={0}
-                fontWeight={isActive ? '700' : '600'}
-                position="relative"
-                whiteSpace="nowrap"
-              >
-                {item.label}
-              </Button>
-            );
-          })}
+    <Box as="nav" py={3} top={0} zIndex={10}>
+      <Container as="ul" maxW="1200px">
+        <HStack as="li" spacing={8} justify="center">
+          <Link
+            as={Link}
+            to=""
+            fontWeight="600"
+            fontSize="var(--font-medium)"
+            _hover={{ textDecoration: 'none' }}
+          >
+            국내도서
+          </Link>
+          <Link
+            as={Link}
+            to=""
+            fontWeight="600"
+            _hover={{ textDecoration: 'none' }}
+          >
+            해외도서
+          </Link>
+          <Link
+            as={Link}
+            to=""
+            fontWeight="600"
+            _hover={{ textDecoration: 'none' }}
+          >
+            11월 추천도서
+          </Link>
+          <Link
+            as={Link}
+            to=""
+            fontWeight="600"
+            _hover={{ textDecoration: 'none' }}
+          >
+            {' '}
+            계절도서
+          </Link>
         </HStack>
       </Container>
     </Box>
   );
-});
+};
 
 export default Navigation;
