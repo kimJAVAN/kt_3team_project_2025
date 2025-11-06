@@ -14,7 +14,6 @@ const Main = () => {
       display="flex"
       flexDirection="column"
       alignItems="center"
-      gap="60px"
       maxWidth="fit-content"
     >
       <Navigation />

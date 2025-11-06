@@ -10,6 +10,7 @@ const Navigation = () => {
             as={Link}
             to=""
             fontWeight="600"
+            fontSize="var(--font-medium)"
             _hover={{ textDecoration: 'none' }}
           >
             국내도서

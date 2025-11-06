@@ -69,25 +69,39 @@ const Bestseller = () => {
       image: 'https://via.placeholder.com/80',
       price: 30000,
     },
+    {
+      id: 3,
+      title: '책 제목 3',
+      writer: '이름3',
+      image: 'https://via.placeholder.com/80',
+      price: 30000,
+    },
+    {
+      id: 3,
+      title: '책 제목 3',
+      writer: '이름3',
+      image: 'https://via.placeholder.com/80',
+      price: 30000,
+    },
   ];
   return (
-    <Container p="0">
+    <Container p="0" margin="100px 0">
       <Text fontSize="var(--font-larger)" fontWeight="600">
         베스트셀러
       </Text>
       <Grid
         templateColumns={{
           base: 'repeat(1, 1fr)',
-          md: 'repeat(4, 1fr)',
-          lg: 'repeat(4, 1fr)',
+          md: 'repeat(5, 1fr)',
+          lg: 'repeat(5, 1fr)',
         }}
-        rowGap={6}
-        columnGap={6}
-        margin="40px 0"
+        rowGap={8}
+        columnGap={8}
+        margin="80px 0"
       >
         {bookData.map((book) => (
-          <Box key={book.id} bgColor="var(--bg-color)" p="4">
-            <Box w="300px">
+          <Box key={book.id} bgColor="var(--bg-color)" p="3">
+            <Box width="230px" height="300px">
               <Image src={book.image} />
             </Box>
             <Flex alignItems="center" justifyContent="space-between">
