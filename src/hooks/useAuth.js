@@ -1,11 +1,17 @@
+import {
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut,
+  createUserWithEmailAndPassword, // ✅ 추가
+  updateProfile, // ✅ 이름 저장용
+} from "firebase/auth";
+import { auth } from "../config/firebase";
 import { useState, useEffect } from "react";
-import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
-import { auth } from "../config/firebase"; 
 
 export function useAuth() {
-  const [user, setUser] = useState(null); 
-  const [loading, setLoading] = useState(true); 
-  const [error, setError] = useState(null); 
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -23,7 +29,23 @@ export function useAuth() {
       return true;
     } catch (err) {
       setError(err.message);
-      return false; 
+      return false;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ 회원가입 함수 추가
+  const signup = async (name, email, password) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, { displayName: name }); // 이름 저장
+      return true;
+    } catch (err) {
+      setError(err.message);
+      return false;
     } finally {
       setLoading(false);
     }
@@ -34,5 +56,6 @@ export function useAuth() {
     setUser(null);
   };
 
-  return { user, loading, error, login, logout };
+  // ✅ signup을 return에도 추가
+  return { user, loading, error, login, signup, logout };
 }

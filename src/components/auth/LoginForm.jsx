@@ -37,8 +37,8 @@ const LoginForm = () => {
     <Box
       as="form"
       onSubmit={handleSubmit}
-      width="600px"
-      height="400px"
+      width="500px"
+      height="300px"
       mx="auto"
       display="flex"
       flexDirection="column"
