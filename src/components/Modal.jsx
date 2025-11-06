@@ -17,28 +17,37 @@ export default function Modal({
       {trigger ? <Dialog.Trigger asChild>{trigger}</Dialog.Trigger> : null}
 
       <Portal>
-        <Dialog.Backdrop />
-        <Dialog.Positioner>
-          <Dialog.Content {...contentProps}>
+        <Dialog.Backdrop bg="rgba(41, 41, 41, 0.14)" />
+        <Dialog.Positioner
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <Dialog.Content
+            {...contentProps}
+            boxShadow="0 4px 10px rgba(113, 113, 113, 0.08)"
+          >
             {title ? (
               <Dialog.Header>
                 <Dialog.Title>{title}</Dialog.Title>
               </Dialog.Header>
             ) : null}
 
-            <Dialog.Body>{children}</Dialog.Body>
+            <Dialog.Body fontSize="var(--font-medium)">{children}</Dialog.Body>
 
             {footer ? (
               <Dialog.Footer>{footer}</Dialog.Footer>
             ) : (
-              <Dialog.Footer>
+              <Dialog.Footer marginTop={4}>
                 {/* 취소: 내부 상태 닫힘 */}
                 <Dialog.ActionTrigger asChild>
                   <Button variant="outline">{cancelText}</Button>
                 </Dialog.ActionTrigger>
 
                 {/* 확인: onConfirm 호출 후 닫고 싶으면 onConfirm에서 처리 */}
-                <Button onClick={onConfirm}>{confirmText}</Button>
+                <Button onClick={onConfirm} bgColor="var(--main-color)">
+                  {confirmText}
+                </Button>
               </Dialog.Footer>
             )}
 

@@ -16,6 +16,7 @@ import { useState } from 'react';
 import { IoIosHeartEmpty } from 'react-icons/io';
 import { useNavigate } from 'react-router';
 import Modal from '../../../components/Modal';
+import { useAuth } from '../../../hooks/useAuth';
 
 const Bestseller = () => {
   const bookData = [
@@ -90,8 +91,22 @@ const Bestseller = () => {
       price: 30000,
     },
   ];
-  const [open, setOpen] = useState(false);
+
+  const [openCart, setOpenCart] = useState(false);
+  const [openLogin, setOpenLogin] = useState(false);
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleBuyNow = () => {
+    if (user) {
+      // 로그인되어 있으면 결제 페이지로 이동
+      navigate('/kt_3team_project_2025/pay');
+    } else {
+      // 로그인 안 되어 있으면 로그인 모달 띄움
+      setOpenLogin(true);
+    }
+  };
+
   return (
     <Container p="0" margin="100px 0">
       <Text fontSize="var(--font-larger)" fontWeight="600">
@@ -139,27 +154,45 @@ const Bestseller = () => {
               <Button
                 bgColor="var(--sub-color)"
                 flex="1"
-                onClick={() => setOpen(true)} // ← 클릭 시 열기
+                onClick={() => setOpenCart(true)} // ← 클릭 시 열기
               >
                 장바구니
               </Button>
 
-              <Button bgColor="var(--main-color)" flex="1">
+              <Button
+                bgColor="var(--main-color)"
+                flex="1"
+                onClick={handleBuyNow}
+              >
                 바로구매
               </Button>
               <Modal
                 title="장바구니 이동"
-                open={open}
-                onOpenChange={(e) => setOpen(e.open)} // Chakra Dialog는 e.open으로 상태 전달
+                open={openCart}
+                onOpenChange={(e) => setOpenCart(e.open)} // Chakra Dialog는 e.open으로 상태 전달
                 confirmText="장바구니 이동"
                 cancelText="취소"
                 onConfirm={() => {
-                  navigate('/cart');
-                  setOpen(false);
+                  navigate('/kt_3team_project_2025/cart');
+                  setOpenCart(false);
                 }}
                 size="xl"
               >
                 장바구니 페이지로 이동하시겠습니까?
+              </Modal>
+              <Modal
+                title="로그인 필요"
+                open={openLogin}
+                onOpenChange={(e) => setOpenLogin(e.open)}
+                confirmText="로그인 페이지로 이동"
+                cancelText="취소"
+                onConfirm={() => {
+                  navigate('/kt_3team_project_2025/login');
+                  setOpenLogin(false);
+                }}
+                size="md"
+              >
+                로그인이 필요한 서비스입니다. 로그인 페이지로 이동하시겠습니까?
               </Modal>
             </Flex>
           </Box>
