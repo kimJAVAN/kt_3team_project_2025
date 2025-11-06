@@ -8,9 +8,10 @@ import {
   Link,
   Text,
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
+import { Field } from "@chakra-ui/react/field"; // ✅ 올바른 import 위치
+import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { toaster } from "../ui/toaster"; // 🔹 toaster.jsx에서 불러오기
+import { toaster } from "../ui/toaster";
 
 const LoginForm = () => {
   const { login, error, loading } = useAuth();
@@ -22,7 +23,6 @@ const LoginForm = () => {
     e.preventDefault();
     const isSuccess = await login(email, password);
     if (isSuccess) {
-      // 🔹 toaster 사용
       toaster.create({
         title: "로그인 성공",
         description: "환영합니다!",
@@ -37,42 +37,47 @@ const LoginForm = () => {
     <Box
       as="form"
       onSubmit={handleSubmit}
-      width="500px"
-      height="350px"
+      width="600px"
+      height="400px"
       mx="auto"
       display="flex"
       flexDirection="column"
       justifyContent="center"
       alignItems="center"
-      gap={4}
+      gap={6}
     >
       <VStack spacing={6} width="100%">
-        <Input
-          type="text"
-          placeholder="이메일"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          isRequired
-          size="lg"
-          borderRadius="md"
-          boxShadow="sm"
-          focusBorderColor="teal.400"
-          backgroundColor={"#ffffffff"}
-        />
+        {/* 이메일 */}
+        <Field.Root required>
+          <Field.Label fontWeight="semibold">이메일</Field.Label>
+          <Input
+            type="email"
+            placeholder="이메일 주소를 입력하세요"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            size="lg"
+            borderRadius="md"
+            boxShadow="sm"
+            bg="white"
+          />
+        </Field.Root>
 
-        <Input
-          type="password"
-          placeholder="비밀번호"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          isRequired
-          size="lg"
-          borderRadius="md"
-          boxShadow="sm"
-          focusBorderColor="teal.400"
-          backgroundColor={"#ffffffff"}
-        />
+        {/* 비밀번호 */}
+        <Field.Root required>
+          <Field.Label fontWeight="semibold">비밀번호</Field.Label>
+          <Input
+            type="password"
+            placeholder="비밀번호를 입력하세요"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            size="lg"
+            borderRadius="md"
+            boxShadow="sm"
+            bg="white"
+          />
+        </Field.Root>
 
+        {/* 링크 */}
         <HStack justify="space-between" width="100%">
           <Link fontSize="sm" color="#0A400C" href="#">
             아이디 찾기
@@ -80,20 +85,27 @@ const LoginForm = () => {
           <Link fontSize="sm" color="#0A400C" href="#">
             비밀번호 찾기
           </Link>
-          <Link fontSize="sm" color="#0A400C" href="#">
+          <Link
+            as={RouterLink}
+            to="/kt_3team_project_2025/signup"
+            fontSize="sm"
+            color="#0A400C"
+          >
             회원가입
           </Link>
         </HStack>
 
+        {/* 로그인 버튼 */}
         <Button
           type="submit"
           width="100%"
           height="45px"
-          backgroundColor={"#0A400C"}
-          colorScheme="teal"
+          bg="#0A400C"
+          color="white"
           fontWeight="bold"
           isLoading={loading}
           loadingText="로그인 중..."
+          _hover={{ bg: "#13661A" }}
         >
           로그인
         </Button>

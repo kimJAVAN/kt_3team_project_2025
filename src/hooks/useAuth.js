@@ -20,8 +20,10 @@ export function useAuth() {
     setError(null);
     try {
       await signInWithEmailAndPassword(auth, email, password);
+      return true;
     } catch (err) {
       setError(err.message);
+      return false; 
     } finally {
       setLoading(false);
     }
