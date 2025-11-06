@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-// import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
+import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
 
 function generateRandomString() {
   return window.btoa(Math.random().toString()).slice(0, 20);

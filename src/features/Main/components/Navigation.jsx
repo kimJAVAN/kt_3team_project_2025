@@ -3,13 +3,7 @@ import { Link } from 'react-router-dom';
 
 const Navigation = () => {
   return (
-    <Box
-      as="nav"
-      py={3}
-      position="sticky" // 헤더 아래 고정하고 싶으면 유지
-      top={0}
-      zIndex={10}
-    >
+    <Box as="nav" py={3} top={0} zIndex={10}>
       <Container as="ul" maxW="1200px">
         <HStack as="li" spacing={8} justify="center">
           <Link

@@ -16,11 +16,12 @@ const Banner = () => {
     <Box
       borderRadius="xl" // ✅ 외곽 둥글게
       overflow="hidden" // ✅ 이미지가 둥근 모서리 밖으로 안 나가게
+      width="1200px"
     >
       <Swiper
         className="home-banner"
         style={{
-          '--swiper-theme-color': '#fff', // ✅ 페이지네이션 및 네비게이션 색상 변경
+          '--swiper-theme-color': '#fff',
         }}
         spaceBetween={50}
         slidesPerView={1}
