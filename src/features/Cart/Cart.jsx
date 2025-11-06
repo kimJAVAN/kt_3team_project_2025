@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import { Box, Flex, Heading, Text, Image, Button, HStack, VStack, IconButton } from "@chakra-ui/react";
-import { Checkbox } from "@chakra-ui/react";
 import { FiPlus, FiMinus } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 
 const Cart = () => {
+  const navigate = useNavigate();
+
   const [items, setItems] = useState([
     {
       id: 1,
       name: "자바스크립트",
-      price: 100,
+      price: 150,
       count: 1,
       image: "https://via.placeholder.com/80",
       selected: true,
@@ -16,7 +18,7 @@ const Cart = () => {
     {
       id: 2,
       name: "리액트",
-      price: 120,
+      price: 180,
       count: 1,
       image: "https://via.placeholder.com/80",
       selected: false,
@@ -67,7 +69,25 @@ const Cart = () => {
       alert("상품을 선택해주세요");
       return;
     }
-    alert("주문 페이지로 이동합니다");
+
+    // 선택된 상품들을 PaymentPage 형식에 맞게 변환
+    const orderItems = selectedItems.map(item => ({
+      id: item.id,
+      title: item.name,
+      image: item.image,
+      quantity: item.count,
+      price: item.price
+    }));
+
+    // PaymentPage로 데이터 전달
+    navigate("/kt_3team_project_2025/pay", {
+      state: {
+        orderItems,
+        totalItemPrice: itemsTotal,
+        deliveryFee: shippingFee,
+        finalPrice: totalAmount
+      }
+    });
   };
 
   const selectedItems = items.filter((item) => item.selected);
@@ -79,14 +99,15 @@ const Cart = () => {
 
   let shippingFee = 0;
   if (itemsTotal > 0 && itemsTotal < 30000) {
-    shippingFee = 3500;
+    // 배송비
+    shippingFee = 30;
   }
 
   const totalAmount = itemsTotal + shippingFee;
 
   return (
     <Box bg="var(--bg-color)" minH="100vh" py="40px">
-      <Box maxW="1200px" mx="auto">
+      <Box maxW="1200px" mx="auto" px="20px">
         <Flex gap="40px" direction={{ base: "column", lg: "row" }}>
           {/* 왼쪽 영역 - 장바구니 목록 */}
           <Box flex="2" bg="white" p="20px" borderRadius="16px" boxShadow="sm">
@@ -111,7 +132,7 @@ const Cart = () => {
                   variant="outline" 
                   onClick={handleDeleteSelected}
                   bg="var(--sub-color)"
-                  color="var(--bg-color)"
+                  color="var(--main-color)"
                   borderColor="var(--sub-color)"
                   _hover={{ bg: "#6d7a58" }}
                 >
@@ -122,7 +143,7 @@ const Cart = () => {
                   variant="outline" 
                   onClick={handleDeleteAll}
                   bg="var(--sub-color)"
-                  color="var(--bg-color)"
+                  color="var(--main-color)"
                   borderColor="var(--sub-color)"
                   _hover={{ bg: "#6d7a58" }}
                 >
@@ -161,7 +182,7 @@ const Cart = () => {
                           <Text fontSize="md" fontWeight="medium" color="black">
                             {item.name}
                           </Text>
-                          <Text fontSize="lg" fontWeight="bold" color="var(--bg-color)">
+                          <Text fontSize="lg" fontWeight="bold" color="var(--main-color)">
                             {item.price.toLocaleString()}원
                           </Text>
                         </VStack>
@@ -174,7 +195,7 @@ const Cart = () => {
                           onClick={() => handleCountChange(item.id, -1)}
                           disabled={item.count <= 1}
                           bg="var(--sub-color)"
-                          color="var(--bg-color)"
+                          color="var(--main-color)"
                           _hover={{ bg: "#6d7a58" }}
                         >
                           <FiMinus />
@@ -187,7 +208,7 @@ const Cart = () => {
                           size="sm"
                           onClick={() => handleCountChange(item.id, 1)}
                           bg="var(--sub-color)"
-                          color="var(--bg-color)"
+                          color="var(--main-color)"
                           _hover={{ bg: "#6d7a58" }}
                         >
                           <FiPlus />
@@ -223,7 +244,7 @@ const Cart = () => {
               </Flex>
               <Flex justify="space-between">
                 <Text color="black">배송비</Text>
-                <Text fontWeight="bold" color={shippingFee === 0 ? "var(--bg-color)" : "black"}>
+                <Text fontWeight="bold" color={shippingFee === 0 ? "var(--main-color)" : "black"}>
                   {shippingFee === 0 ? "무료" : `${shippingFee.toLocaleString()}원`}
                 </Text>
               </Flex>
@@ -238,7 +259,7 @@ const Cart = () => {
 
             {itemsTotal > 0 && itemsTotal < 30000 && (
               <Box bg="var(--bg-color)" p="12px" borderRadius="8px" mb="16px">
-                <Text fontSize="sm">
+                <Text fontSize="sm" color="var(--main-color)">
                   💡 30,000원 이상 구매 시 배송비 무료
                 </Text>
               </Box>
@@ -249,9 +270,9 @@ const Cart = () => {
               width="100%"
               onClick={handlePay}
               disabled={selectedItems.length === 0}
-              bg="var(--main-color)"
-              color="var(--bg-color)"
-              _hover={{ bg: "var(--sub-color)" }}
+              bg="var(--sub-color)"
+              color="var(--main-color)"
+              _hover={{ bg: "#6d7a58" }}
             >
               주문하기
             </Button>

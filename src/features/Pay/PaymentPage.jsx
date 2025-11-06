@@ -1,9 +1,18 @@
 import { useState, useEffect } from 'react';
-import { Box, Button, Heading, Input, Textarea, Stack, HStack, Flex, Text, Image } from '@chakra-ui/react';
+import { Box, Button, Heading, Input, Stack, HStack, Flex, Text, Image } from '@chakra-ui/react';
 import { WidgetCheckoutPage } from './WidgetCheckout';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export default function PaymentPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Cart에서 전달받은 데이터
+  const cartData = location.state || {};
+  const [orderItems, setOrderItems] = useState(cartData.orderItems || []);
+  const [cartTotalPrice, setCartTotalPrice] = useState(cartData.totalItemPrice || 0);
+  const [cartDeliveryFee, setCartDeliveryFee] = useState(cartData.deliveryFee || 0);
+
   const [customerType, setCustomerType] = useState('existing');
   const [addressType, setAddressType] = useState('existing');
   const [deliveryRequest, setDeliveryRequest] = useState('');
@@ -21,10 +30,17 @@ export default function PaymentPage() {
   const [address, setAddress] = useState('');
   const [detailAddress, setDetailAddress] = useState('');
 
-  const navigate = useNavigate();
   const phoneNumber = `${phone1}${phone2}${phone3}`;
 
-  // ✅ 스크롤 고정
+  // 장바구니가 비어있으면 장바구니로 리다이렉트
+  useEffect(() => {
+    if (!orderItems || orderItems.length === 0) {
+      alert('장바구니에 상품이 없습니다.');
+      navigate('/kt_3team_project_2025/cart');
+    }
+  }, [orderItems, navigate]);
+
+  // 스크롤 고정
   useEffect(() => {
     const handleScroll = () => {
       setIsSticky(window.scrollY > 100);
@@ -33,7 +49,7 @@ export default function PaymentPage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // ✅ 다음 주소 API 스크립트 로드
+  // 다음 주소 API 스크립트 로드
   useEffect(() => {
     const script = document.createElement('script');
     script.src = "//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js";
@@ -41,7 +57,7 @@ export default function PaymentPage() {
     document.body.appendChild(script);
   }, []);
 
-  // ✅ 주소 검색 함수
+  // 주소 검색 함수
   const handlePostcode = () => {
     new window.daum.Postcode({
       oncomplete: function(data) {
@@ -52,19 +68,14 @@ export default function PaymentPage() {
     }).open();
   };
 
-  const orderItems = [
-    { id: 1, title: '책 제목 1', image: 'https://via.placeholder.com/80', quantity: 2, price: 25 },
-    { id: 2, title: '책 제목 2', image: 'https://via.placeholder.com/80', quantity: 1, price: 20 }
-  ];
-
   const totalItemPrice = orderItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const deliveryFee = 30;
-  const remoteFee = isRemote ? 32 : 0;
+  const deliveryFee = cartDeliveryFee;
+  const remoteFee = isRemote ? 5000 : 0;
   const finalPrice = totalItemPrice + deliveryFee + remoteFee;
 
   const orderName = orderItems.length > 1 
     ? `${orderItems[0].title} 외 ${orderItems.length - 1}건`
-    : orderItems[0].title;
+    : orderItems[0]?.title || '';
 
   const handlePaymentClick = () => {
     if (!agreed) {
@@ -159,23 +170,36 @@ export default function PaymentPage() {
             </Box>
           </Stack>
 
-          {/* 우측 영역 생략... */}
-
           {/* 우측 영역 (30%) */} 
           <Box flex="3" position={isSticky ? 'sticky' : 'relative'} top={isSticky ? '20px' : '0'} h="fit-content" > 
-            <Stack gap="25px"> {/* 주문정보 */} <Box bg="var(--bg-color)" p="24px" borderRadius="15px"> 
-              <Heading fontSize="24px" mb="16px" color="#000"> 주문정보 </Heading> 
-              <Stack gap="16px"> {orderItems.map((item) => ( 
-                <HStack key={item.id} gap="16px" align="start"> 
-                <Image src={item.image} boxSize="80px" borderRadius="10px" objectFit="cover" /> 
-                <Stack gap="4px" flex="1"> 
-                  <Text fontSize="16px" fontWeight="bold" color="#000"> {item.title} 
-                  </Text> <Text fontSize="14px" color="#666"> {item.quantity}권 </Text> 
-                  <Text fontSize="16px" color="#000"> {item.price.toLocaleString()}원 </Text> 
-                  <Text fontSize="16px" fontWeight="bold" color="var(--main-color)"> 총 {(item.price * item.quantity).toLocaleString()}원 </Text> 
-                </Stack> </HStack> ))} </Stack> 
-              </Box> {/* 최종 결제 금액 */} 
+            <Stack gap="25px">
+              {/* 주문정보 */}
+              <Box bg="var(--bg-color)" p="24px" borderRadius="15px"> 
+                <Heading fontSize="24px" mb="16px" color="#000"> 주문정보 </Heading> 
+                <Stack gap="16px">
+                  {orderItems.map((item) => ( 
+                    <HStack key={item.id} gap="16px" align="start"> 
+                      <Image src={item.image} boxSize="80px" borderRadius="10px" objectFit="cover" /> 
+                      <Stack gap="4px" flex="1"> 
+                        <Text fontSize="16px" fontWeight="bold" color="#000"> 
+                          {item.title} 
+                        </Text>
+                        <Text fontSize="14px" color="#666"> 
+                          {item.quantity}권 
+                        </Text> 
+                        <Text fontSize="16px" color="#000"> 
+                          {item.price.toLocaleString()}원 
+                        </Text> 
+                        <Text fontSize="16px" fontWeight="bold" color="var(--main-color)"> 
+                          총 {(item.price * item.quantity).toLocaleString()}원 
+                        </Text> 
+                      </Stack>
+                    </HStack>
+                  ))}
+                </Stack> 
+              </Box>
               
+              {/* 최종 결제 금액 */} 
               <Box bg="var(--bg-color)" p="24px" borderRadius="15px"> 
                 <Heading fontSize="24px" mb="16px" color="#000"> 최종 결제 금액 </Heading> 
                 <Stack gap="12px"> 
@@ -185,15 +209,55 @@ export default function PaymentPage() {
                   </Flex> 
                   <Flex justify="space-between"> 
                     <Text fontSize="16px" color="#000">배송비</Text> 
-                    <Text fontSize="16px" color="#000">+{deliveryFee.toLocaleString()}원</Text> 
-                  </Flex> {isRemote && ( <Flex justify="space-between"> <Text fontSize="16px" color="#000">도서산간</Text> 
-                  <Text fontSize="16px" color="#000">+{remoteFee.toLocaleString()}원</Text>
-                </Flex> )} <Box h="1px" bg="var(--sub-color)" my="8px" /> 
-                <Flex justify="space-between">
-                  <Text fontSize="24px" fontWeight="bold" color="#000"> 최종 결제 금액 </Text> 
-                  <Text fontSize="24px" fontWeight="bold" color="var(--main-color)"> {finalPrice.toLocaleString()}원 </Text> 
-                </Flex> </Stack> </Box> {/* 구매 조건 및 결제 진행 동의 */} 
-                <Box bg="var(--bg-color)" p="24px" borderRadius="15px"> <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '16px', marginBottom: '16px', cursor: 'pointer' }}> <input type="checkbox" style={{ width: '18px', height: '18px' }} checked={agreed} onChange={(e) => setAgreed(e.target.checked)} /> 구매 조건 및 결제 진행 동의 </label> <Box bg="white" p="16px" borderRadius="10px" fontSize="14px" color="#666"> <Text>• 전자상거래법 제8조에 따른 구매조건 확인</Text> <Text>• 개인정보 제3자 제공 동의</Text> <Text>• 전자금융거래 이용약관 동의</Text> </Box> </Box> {/* 결제하기 버튼 */} <Button bg={agreed && widgetReady ? "var(--main-color)" : "#ccc"} color="#FFFFFF" fontSize="24px" h="60px" borderRadius="15px" _hover={{ bg: agreed && widgetReady ? 'var(--main-color)' : '#ccc' }} onClick={handlePaymentClick} isDisabled={!agreed || !widgetReady} cursor={agreed && widgetReady ? 'pointer' : 'not-allowed'} > {widgetReady ? '결제하기' : '결제 준비 중...'} </Button> </Stack> </Box>
+                    <Text fontSize="16px" color="#000">
+                      {deliveryFee === 0 ? '무료' : `+${deliveryFee.toLocaleString()}원`}
+                    </Text> 
+                  </Flex>
+                  {isRemote && (
+                    <Flex justify="space-between">
+                      <Text fontSize="16px" color="#000">도서산간</Text> 
+                      <Text fontSize="16px" color="#000">+{remoteFee.toLocaleString()}원</Text>
+                    </Flex>
+                  )}
+                  <Box h="1px" bg="var(--sub-color)" my="8px" /> 
+                  <Flex justify="space-between">
+                    <Text fontSize="24px" fontWeight="bold" color="#000"> 최종 결제 금액 </Text> 
+                    <Text fontSize="24px" fontWeight="bold" color="var(--main-color)"> 
+                      {finalPrice.toLocaleString()}원 
+                    </Text> 
+                  </Flex>
+                </Stack>
+              </Box>
+              
+              {/* 구매 조건 및 결제 진행 동의 */} 
+              <Box bg="var(--bg-color)" p="24px" borderRadius="15px">
+                <label style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '16px', marginBottom: '16px', cursor: 'pointer' }}>
+                  <input type="checkbox" style={{ width: '18px', height: '18px' }} checked={agreed} onChange={(e) => setAgreed(e.target.checked)} /> 
+                  구매 조건 및 결제 진행 동의
+                </label>
+                <Box bg="white" p="16px" borderRadius="10px" fontSize="14px" color="#666">
+                  <Text>• 전자상거래법 제8조에 따른 구매조건 확인</Text>
+                  <Text>• 개인정보 제3자 제공 동의</Text>
+                  <Text>• 전자금융거래 이용약관 동의</Text>
+                </Box>
+              </Box>
+              
+              {/* 결제하기 버튼 */}
+              <Button 
+                bg={agreed && widgetReady ? "var(--main-color)" : "#ccc"} 
+                color="#FFFFFF" 
+                fontSize="24px" 
+                h="60px" 
+                borderRadius="15px" 
+                _hover={{ bg: agreed && widgetReady ? 'var(--sub-color)' : '#ccc' }} 
+                onClick={handlePaymentClick} 
+                isDisabled={!agreed || !widgetReady} 
+                cursor={agreed && widgetReady ? 'pointer' : 'not-allowed'}
+              > 
+                {widgetReady ? '결제하기' : '결제 준비 중...'} 
+              </Button>
+            </Stack>
+          </Box>
         </Flex>
       </Box>
     </Box>
