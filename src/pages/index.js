@@ -16,3 +16,6 @@ export { default as CartPage } from './CartPage';
 
 // 회원 페이지
 export { default as WishListPage } from './WishLishPage'
+
+// 마이페이지
+export { default as MyPage } from './MyPage'
