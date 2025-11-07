@@ -1,6 +1,18 @@
 // routes/router.jsx
 import { createBrowserRouter } from "react-router-dom";
-import { LayoutPage, MainPage, AdminPage, LoginPage, PayPage, PaySuccessPage, PayFailPage, CartPage, SignupPage, WishListPage } from "@/pages";
+import {
+  LayoutPage,
+  MainPage,
+  AdminPage,
+  LoginPage,
+  PayPage,
+  PaySuccessPage,
+  PayFailPage,
+  CartPage,
+  SignupPage,
+  WishListPage,
+  BookListPage,
+} from "@/pages";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +35,10 @@ const router = createBrowserRouter([
             element: <MainPage />,
           },
           {
+            path: "book/:slug",
+            element: <BookListPage />,
+          },
+          {
             path: "pay",
             children: [
               { index: true, element: <PayPage /> },
@@ -32,16 +48,14 @@ const router = createBrowserRouter([
           },
           {
             path: "cart",
-            element: <CartPage />
-          }
+            element: <CartPage />,
+          },
         ],
       },
       {
-        path : 'member',
+        path: "member",
         element: <LayoutPage />,
-        children : [
-          { path: "wishlist", element: <WishListPage /> },
-        ]
+        children: [{ path: "wishlist", element: <WishListPage /> }],
       },
       {
         path: "admin",
