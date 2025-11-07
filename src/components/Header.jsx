@@ -7,15 +7,15 @@ import {
   Image,
   Input,
   InputGroup,
-} from '@chakra-ui/react';
-import { SlBasket } from 'react-icons/sl';
-import { IoIosHeartEmpty } from 'react-icons/io';
-import { IoIosSearch } from 'react-icons/io';
-import Logo from '../assets/logo.png';
+} from "@chakra-ui/react";
+import { SlBasket } from "react-icons/sl";
+import { IoIosHeartEmpty } from "react-icons/io";
+import { IoIosSearch } from "react-icons/io";
+import Logo from "../assets/logo.png";
 
 export default function Header() {
   return (
-    <Container borderBottom={'1px solid #eee'} p={4} position="sticky">
+    <Container borderBottom={"1px solid #eee"} p={4} position="sticky">
       <HStack justifyContent="space-between" alignItems="center">
         <Image
           src={Logo}
@@ -40,8 +40,8 @@ export default function Header() {
             size="md"
             css={{
               _icon: {
-                width: '6',
-                height: '6',
+                width: "6",
+                height: "6",
               },
             }}
           >
@@ -52,8 +52,8 @@ export default function Header() {
             size="md"
             css={{
               _icon: {
-                width: '6',
-                height: '6',
+                width: "6",
+                height: "6",
               },
             }}
           >

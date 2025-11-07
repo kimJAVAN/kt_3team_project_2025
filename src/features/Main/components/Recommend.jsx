@@ -10,57 +10,33 @@ import {
   Image,
   Text,
   VStack,
-} from '@chakra-ui/react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Navigation } from 'swiper/modules';
-import { TfiArrowCircleLeft } from 'react-icons/tfi';
-import { TfiArrowCircleRight } from 'react-icons/tfi';
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import { useRef } from 'react';
-import ButtonWithIcon from '../../../components/ButtonWithIcon';
+} from "@chakra-ui/react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Navigation } from "swiper/modules";
+import { TfiArrowCircleLeft } from "react-icons/tfi";
+import { TfiArrowCircleRight } from "react-icons/tfi";
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { useMemo, useRef } from "react";
+import ButtonWithIcon from "../../../components/ButtonWithIcon";
+import { useBookList } from "../../../hooks/useBookList";
 
 const Recommend = () => {
-  const bookData = [
-    {
-      id: 1,
-      title: '책 제목 1',
-      writer: '이름1',
-      image: 'https://via.placeholder.com/80',
-    },
-    {
-      id: 2,
-      title: '책 제목 2',
-      writer: '이름2',
-      image: 'https://via.placeholder.com/80',
-    },
-    {
-      id: 3,
-      title: '책 제목 3',
-      writer: '이름3',
-      image: 'https://via.placeholder.com/80',
-    },
-    {
-      id: 3,
-      title: '책 제목 3',
-      writer: '이름3',
-      image: 'https://via.placeholder.com/80',
-    },
-    {
-      id: 3,
-      title: '책 제목 3',
-      writer: '이름3',
-      image: 'https://via.placeholder.com/80',
-    },
-    {
-      id: 3,
-      title: '책 제목 3',
-      writer: '이름3',
-      image: 'https://via.placeholder.com/80',
-    },
-  ];
-  // ✅ 버튼 ref 선언
+  const { books, loading } = useBookList({
+    pageSize: 6,
+    orderField: "createdAt",
+    orderDirection: "desc",
+  });
+  const randomBooks = useMemo(() => {
+    if (!books?.length) return [];
+    const pool = [...books];
+    for (let i = pool.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [pool[i], pool[j]] = [pool[j], pool[i]];
+    }
+    return pool.slice(0, 10);
+  }, [books]);
   const prevRef = useRef(null);
   const nextRef = useRef(null);
   return (
@@ -81,7 +57,7 @@ const Recommend = () => {
             </Button>
           </Box>
         </Flex>
-        <HStack display="flex" alignItems="center" gap={5} mb={20}>
+        <HStack display="flex" alignItems="center" gap={5} mb={40}>
           <ButtonWithIcon
             ref={prevRef}
             btnWidth="40px"
@@ -95,7 +71,7 @@ const Recommend = () => {
           <Box
             className="custom-pagination"
             style={{
-              '--swiper-theme-color': 'var(--main-color)',
+              "--swiper-theme-color": "var(--main-color)",
             }}
           />
           <ButtonWithIcon
@@ -121,7 +97,7 @@ const Recommend = () => {
             nextEl: nextRef.current,
           }}
           pagination={{
-            el: '.custom-pagination',
+            el: ".custom-pagination",
             clickable: true,
           }}
           speed={400}
@@ -131,16 +107,56 @@ const Recommend = () => {
             swiper.params.navigation.nextEl = nextRef.current;
           }}
         >
-          {bookData.map((book) => (
+          {(loading
+            ? Array.from({ length: 8 }, (_, i) => ({ id: `skeleton-${i}` }))
+            : randomBooks
+          ).map((book) => (
             <SwiperSlide key={book.id}>
-              <Box height="300px">
-                <Image src={book.image} />
+              <Box height="320px" border="1px solid #eee">
+                <Image
+                  src={book.cover || "/no-image.png"}
+                  alt={book.title || "도서"}
+                  w="100%"
+                  h="100%"
+                  objectFit="cover"
+                />
               </Box>
-              <Flex alignItems="center" justifyContent="space-between">
-                <Text fontSize="var(--font-large)" fontWeight="bold">
-                  {book.title}
+              <Flex
+                flexDirection="column"
+                alignItems="start"
+                justifyContent="space-between"
+                marginTop="20px"
+              >
+                <Text
+                  fontSize="20px"
+                  fontWeight="bold"
+                  textAlign="left"
+                  css={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "normal",
+                  }}
+                >
+                  {book.title || "제목 미상"}
                 </Text>
-                <Text fontSize="var(--font-medium)">{book.writer}</Text>
+                <Text
+                  fontSize="var(--font-medium)"
+                  textAlign="left"
+                  css={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 1,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    whiteSpace: "normal",
+                  }}
+                >
+                  {" "}
+                  {book.author || book.writer || "작자 미상"}
+                </Text>
               </Flex>
             </SwiperSlide>
           ))}
