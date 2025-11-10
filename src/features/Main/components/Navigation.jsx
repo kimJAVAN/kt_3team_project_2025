@@ -28,7 +28,7 @@ const Navigation = () => {
             fontWeight="600"
             _hover={{ textDecoration: "none" }}
           >
-            11월 추천도서
+            이달의 추천도서
           </Link>
           <Link
             as={Link}
