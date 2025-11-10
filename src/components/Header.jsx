@@ -19,6 +19,7 @@ export default function Header() {
       <HStack justifyContent="space-between" alignItems="center">
         <Image
           src={Logo}
+          // to="/kt_3team_project_2025"
           alt="사이트 로고"
           width="80px"
           objectFit="contain"
